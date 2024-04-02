@@ -11,7 +11,7 @@ public class Rook extends Piece
 	 * A piece can move to dest cell only if 
 	 * 1. it's either empty or
 	 * 2. occupied by a piece of opposite color.*/
-	public boolean moveTo(Cell dest)
+	public boolean canMoveTo(Cell dest)
 	{
 
 		if((dest.row == currentPos.row || dest.col== currentPos.col) 
