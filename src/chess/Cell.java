@@ -1,6 +1,5 @@
 package chess;
 import piece.*;
-
 public class Cell
 {
 	private Piece piece;
@@ -24,4 +23,19 @@ public class Cell
 		return this.piece;
 	}
 
+	public String toString()
+	{
+		return this.col+""+this.row;
+	}
+
+	public boolean equals(Object obj)
+	{
+		if(!(obj instanceof Cell))
+			return false;
+		Cell c = (Cell) obj;
+		if(c.col== this.col && c.row == this.row)
+			return true;
+		else
+			return false;
+	}
 }
