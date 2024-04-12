@@ -1,124 +1,113 @@
 package piece;
-
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import chess.*;
 
-public class Pawn extends Piece {
+public abstract class Piece
+{
+	protected final String colour;
+	protected Cell currentPos;
+	protected ArrayList<Cell> moves;
 
-	private short dir;
-	private final Cell orig;	//The original cell of the pawn.
-	public Pawn(String col, Cell cell)  throws Exception
-	{	super(col, cell);
-		if(col == "White")		//White pawns can move only forward.
-			dir = 1;
-		else					//Black pawns can move only backwards.
-			dir = -1;
-		this.orig = cell;
-	}
-
-	public String toString()
+	/* Constructor of this abstract class to avoid repetition
+	 * in child classes, whose constructor does mainly this.
+	 */
+	public Piece(String col, Cell cell) throws Exception
 	{
-		return colour.charAt(0)+"P";
+		if(cell == null)
+			throw new Exception("Cell null exception.");
+
+		if(cell.getPiece() != null)
+			throw new Exception("Cell not empty exception");
+
+		if(col == null)
+			throw new Exception("Colour null exception.");
+
+		this.colour = col;
+		this.currentPos = cell;
+
+		cell.setPiece(this);
+		this.moves = null;
 	}
 
-	/* A pawn can move only to a direction 'dir' fixed by its color,
-	 * it can go to immediate next column (in that direction), and
-	 * move straight or one step diagonally to kill a piece.
-	 *
-	 * It can also move 2 steps in an initial move.
+	public abstract String toString();
+
+	/* Checks whether the Piece can be moved into cell dest or not.
+	 * If it can be moved to dest, it moves itself,
+	 * changes occupant Piece of the cells, and returns true.
+	 * (It calls canMoveTo method to decide this.)
+	 * returns false otherwise, without any modifying anything.
 	 * */
-
-	protected ArrayList<Cell> getAllMoves(Board board)
+	public boolean moveTo(Cell dest, Board board)
 	{
-		this.moves = new ArrayList<Cell>();
-		//Case 1: Normal move
-		if(board.colourAt((char)(currentPos.row + this.dir),
-			currentPos.col)	== null)
+		if(canMoveTo(dest, board))
 		{
-			moves.add(board.getCellAt((char)(currentPos.row + this.dir),
-				currentPos.col));
-		}
-
-		//Case 2: killing move.
-		if(board.colourAt((char)(currentPos.row + this.dir),
-			(char)(currentPos.col-1))	!= this.colour)
-		{
-			moves.add(board.getCellAt((char)(currentPos.row + this.dir),
-				(char)(currentPos.col-1)));
-		}
-		if(board.colourAt((char)(currentPos.row + this.dir),
-			(char)(currentPos.col+1))	!= this.colour)
-		{
-			moves.add(board.getCellAt((char)(currentPos.row + this.dir),
-				(char)(currentPos.col+1)));
-		}
-
-		//Case 3: initial move.
-		//Both, destination and middle cell should be empty.
-		if( currentPos.equals(orig) &&
-			board.colourAt((char)(currentPos.row + 2*this.dir),
-				currentPos.col)	== null &&
-			board.colourAt((char)(currentPos.row + this.dir),
-				currentPos.col)	== null)
-		{
-			moves.add(board.getCellAt((char)(currentPos.row + 2*this.dir),
-				currentPos.col));
-		}
-
-		return this.moves;
-	}
-
-	/* A pawn can get upgraded to a higher piece (Queen or Knight
-	 * or Rook or Bishop) if it reaches the terminal cell of any column.
-	 * */
-	@Override
-	protected boolean moveTo(Cell dest, Board board)
-	{
-		if(dest.row == Board.rowMax && dest.getPiece()==null)
-		{
-			currentPos.setPiece(null);
-
-			System.out.println("You can update your piece.");
-			System.out.println("Enter Q for Queen, R for rook, K for knight and B for bishop.");
-			Scanner sc = new Scanner(System.in);
-			char newPiece = sc.nextLine().charAt(0);
-			while(newPiece!='Q' && newPiece!='R' && newPiece!='K' && newPiece!='B')
-			{
-				newPiece = sc.nextLine().charAt(0);
-			}
-			sc.close();
-			try
-			{
-				if(newPiece == 'Q')
-				{
-					dest.setPiece(new Queen(this.colour, dest));
-				}
-				else if(newPiece == 'K')
-				{
-					dest.setPiece(new Knight(this.colour, dest));
-				}
-				else if(newPiece == 'R')
-				{
-					dest.setPiece(new Rook(this.colour, dest));
-				}
-				else if(newPiece == 'B')
-				{
-					dest.setPiece(new Bishop(this.colour, dest));
-				}
-			}
-			catch(Exception e)
-			{
-				System.out.println("Something went wrong while "
-					+ "upgrading the pawn to a higher piece.");
-			}
-			currentPos = null;
-			//i.e. this pawn is to be destructed.
+			this.currentPos.setPiece(null);	//empty the current position.
+			dest.setPiece(this);			//fill the destination position.
+			this.currentPos = dest;			//replace current position with new one.
+			this.getAllMoves(board);		//find all moves reachable from here.
 			return true;
 		}
 		else
-			return super.moveTo(dest, board);
+			return false;
+	}
+
+	/* Returns true if this piece can move to cell dest,
+	 * Returns false otherwise.
+	 * This method doesn't modify anything.
+	 *
+	 * It just checks whether destination cell is contained in
+	 * the list of moves.
+	 * */
+	public boolean canMoveTo(Cell dest, Board board)
+	{
+		if(this.moves == null || this instanceof King)
+			this.getAllMoves(board);
+		//If we don't know all the moves from this position or
+		//if this is a king, get all the moves.
+		//For king, moves can change possibly after each move of
+		//a piece on the board.
+
+		return this.moves.contains(dest);
+	}
+
+	protected abstract ArrayList<Cell> getAllMoves(Board board);
+
+	/* movesInDir method returns a list of moves, by moving
+	 * from current cell, to the the direction of vector (rowDir, colDir).
+	 */
+	protected ArrayList<Cell> movesInDir(Board board, int rowDir, int colDir)
+	{
+		ArrayList<Cell> listOfMoves = new ArrayList<Cell>();
+		char row=(char)(currentPos.row+rowDir);
+		char col =(char)(currentPos.col + colDir);
+		for(; row<=Board.rowMax && col<=Board.colMax &&
+			row>=Board.rowMin && col>=Board.colMin; row+=rowDir, col+=colDir)
+		{
+			if(board.colourAt(row, col) == this.colour)
+			{
+				break;
+			}
+			//if this piece is blocked by one of its own color,
+			//it can't move ahead.
+
+			if(board.colourAt(row, col) != null)
+			{
+				listOfMoves.add(board.getCellAt(row, col));
+				break;
+			}
+			//if this piece is blocked by one of opposite color,
+			//it can't move ahead.
+
+			listOfMoves.add(board.getCellAt(row, col));
+			//If that cell is empty, we can easily go there.
+		}
+		return listOfMoves;
+	}
+
+	public String getColour()
+	{
+		return colour;
 	}
 
 }
