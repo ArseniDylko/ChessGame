@@ -13,8 +13,7 @@ class RookTest {
 
 	private Board board;
 	private Rook rook;
-	/**
-	 */
+
 	@BeforeEach
 	void setUp()
 	{

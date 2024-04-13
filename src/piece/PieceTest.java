@@ -14,9 +14,7 @@ import org.junit.jupiter.api.function.Executable;
 
 import chess.*;
 
-/**
- * @author Ravishankar P. Joshi
- * */
+
 class PieceTest
 {
 	private Piece piece;

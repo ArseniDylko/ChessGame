@@ -1,6 +1,7 @@
 package chess;
 //import java.util.ArrayList;
 
+import javax.swing.JFrame;
 import piece.*;
 
 
@@ -133,6 +134,11 @@ public class Board
 			return null;
 	}
 
+	public Cell getCellAt(int row, int col)
+	{
+		return this.getCellAt((char)row, (char)col);
+	}
+
 	/**
 	 * This method is to be used only by king piece, to check
 	 * whether cell dest is under attack by any piece or not.
@@ -211,6 +217,14 @@ public class Board
 	{
 		Board b = new Board(true);
 		b.print();
+
+		JFrame frame = new JFrame("title");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		GraphicsHandler g= new GraphicsHandler(b, 0, 0, 75, 75, 1);
+		frame.add(g);
+		frame.setSize(1000, 1000);
+		frame.setVisible(true);
+		//System.out.print(b.getClass().getSimpleName());
 		//System.out.println(b.isUnderAttack((char)(rowMin+2), (char)(colMin+1), null));
 	}
 }

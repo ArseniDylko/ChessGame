@@ -11,7 +11,8 @@ import org.junit.jupiter.api.Test;
 import chess.*;
 
 
-class PawnTest {
+class PawnTest
+{
 	private Pawn pawn;
 	private Board board;
 
