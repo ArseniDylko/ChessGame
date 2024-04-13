@@ -9,6 +9,7 @@ import org.junit.jupiter.api.function.Executable;
 
 import piece.*;
 
+
 class CellTest
 {
 	private Board board;

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import chess.*;
 
+
 class BishopTest {
 
 	private Bishop bishop;

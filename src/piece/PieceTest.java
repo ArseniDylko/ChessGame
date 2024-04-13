@@ -14,10 +14,7 @@ import org.junit.jupiter.api.function.Executable;
 
 import chess.*;
 
-/**
- * @author Ravishankar P. Joshi
- *
- */
+
 class PieceTest
 {
 	private Piece piece;
@@ -39,10 +36,10 @@ class PieceTest
 	/**
 	 * Test method for the constructor of Piece class
 	 * piece.Piece()
-	 */
+	 * */
 
 	@Test
-	void constructorTest() throws Exception
+	void constructorTest()
 	{
 		Cell a1= board.getCellAt(Board.rowMin, Board.colMin);
 
@@ -79,7 +76,7 @@ class PieceTest
 	/**
 	 * Test method for concrete method
 	 * piece.Piece.moveTo(chess.Cell, chess.Board).
-	 */
+	 * */
 	@Test
 	void moveToTest()
 	{
@@ -120,7 +117,10 @@ class PieceTest
 	/**
 	 * Test method for concrete method
 	 * piece.Piece.canMoveTo(chess.Cell, chess.Board).
-	 */
+	 *
+	 * Tests all the moves of the rook from the cell a1 of a rook,
+	 * when all other cells are empty.
+	 * */
 	@Test
 	void canMoveToTest1()
 	{
@@ -143,6 +143,9 @@ class PieceTest
 		}
 	}
 
+	/**
+	 * Tests the moves of a rook from the cell a1 when all other cells are empty.
+	 **/
 	@Test
 	void canMoveToTest2()
 	{
@@ -173,7 +176,7 @@ class PieceTest
 	 * Test method for concrete method
 	 * piece.Piece.movesInDir(chess.Board, int, int).
 	 * It should work independent of the type of piece.
-	 */
+	 **/
 	@Test
 	void rookMovesFromCornerTest()
 	{
@@ -215,7 +218,7 @@ class PieceTest
 	 * Test method for concrete method
 	 * piece.Piece.movesInDir(chess.Board, int, int).
 	 * It should test the bishop moves along a constant difference diagonal.
-	 */
+	 **/
 	@Test
 	void bishopMovesFromCornerDiffConstantTest()
 	{
@@ -256,7 +259,7 @@ class PieceTest
 	 * Test method for concrete method
 	 * piece.Piece.movesInDir(chess.Board, int, int).
 	 * It should test the bishop moves along a constant sum diagonal.
-	 */
+	 **/
 	@Test
 	void bishopMovesFromCornerSumConstantTest()
 	{

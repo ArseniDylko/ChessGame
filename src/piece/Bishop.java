@@ -4,22 +4,30 @@ import java.util.ArrayList;
 
 import chess.*;
 
+
 public class Bishop extends Piece
 {
 	public Bishop(String col, Cell cell) throws Exception
 	{	super(col, cell);
 	}
 
+	/**
+	 * Returns the string representation of the bishop.
+	 * @return WB for a white bishop.
+	 * BB for a black bishop.
+	 * */
+	@Override
 	public String toString()
 	{
 		return colour.charAt(0)+"B";
 	}
 
-	/* A bishop can move only diagonally, hence
+	/**
+	 * A bishop can move only diagonally, hence
 	 * sum or difference of (row, col) of current and
 	 * destination cell must be the same.
-	 */
-
+	 * */
+	@Override
 	protected ArrayList<Cell> getAllMoves(Board board)
 	{
 		this.moves = new ArrayList<Cell>();
@@ -35,3 +43,6 @@ public class Bishop extends Piece
 		moves.addAll(this.movesInDir(board, -1, -1));
 
 		return this.moves;
+	}
+
+}

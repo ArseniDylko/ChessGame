@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import chess.*;
 
+
 class KingTest
 {
 

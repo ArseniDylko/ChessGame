@@ -1,6 +1,7 @@
 package chess;
 import piece.*;
 
+
 public class Cell
 {
 	private Piece piece;
