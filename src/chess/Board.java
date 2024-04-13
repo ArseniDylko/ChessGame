@@ -1,4 +1,6 @@
 package chess;
+//import java.util.ArrayList;
+
 import piece.*;
 
 public class Board {
@@ -6,16 +8,25 @@ public class Board {
 	private Cell cells[][];
 	public static final char rowMax='8', colMax='h', rowMin='1', colMin='a';
 	public static final String White="White", Black = "Black";
+	//private ArrayList<Piece> pieces;
 
 	private void emptyBoard()
-	{	cells = new Cell[8][8];
-		for(int i=0; i<8; i++)
-		{	for(int j=0; j<8; j++)
-			{	cells[i][j]= new Cell((char)(rowMin+i), (char)(colMin+j));
+	{
+		try
+		{
+			cells = new Cell[8][8];
+			for(int i=0; i<8; i++)
+			{	for(int j=0; j<8; j++)
+				{	cells[i][j]= new Cell((char)(rowMin+i), (char)(colMin+j));
+				}
 			}
+			//Columns are 'a' to 'h'.
+			//Rows are '1' to '8', with row 1 nearest to white.
 		}
-		//Columns are 'a' to 'h'.
-		//Rows are '1' to '8', with row 1 nearest to white.
+		catch(Exception e)
+		{
+			System.out.println("Exception in empty board constructor.");
+		}
 	}
 
 	/* Constructor for an empty board.
@@ -31,37 +42,79 @@ public class Board {
 	{
 		this.emptyBoard();
 		for(int j=0; j<8; j++)
-		{	cells[1][j].setPiece(new Pawn(White, cells[1][j]));
-			//the second nearest row to white is filled with white pawns
-			cells[6][j].setPiece(new Pawn(Black, cells[6][j]));
-			//the second nearest row to black is filled with black pawns.
+		{
+			try
+			{
+				new Pawn(White, cells[1][j]);
+				//the second nearest row to white is filled with white pawns
+				new Pawn(Black, cells[6][j]);
+				//the second nearest row to black is filled with black pawns.
+			}
+			catch(Exception e)
+			{
+				System.out.println("Something went wrong while constructing pawns.");
+			}
 		}
 
-		//giving 2 rooks to both the player on respective corners.
-		cells[0][0].setPiece(new Rook(White, cells[0][0]));
-		cells[0][7].setPiece(new Rook(White, cells[0][7]));
-		cells[7][0].setPiece(new Rook(Black, cells[7][0]));
-		cells[7][7].setPiece(new Rook(Black, cells[7][7]));
+		try
+		{
+			//giving 2 rooks to both the player on respective corners.
+			new Rook(White, cells[0][0]);
+			new Rook(White, cells[0][7]);
+			new Rook(Black, cells[7][0]);
+			new Rook(Black, cells[7][7]);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Something went wrong while constructing rooks.");
+		}
 
-		//giving 2 knights to both players on cells just beside the rooks.
-		cells[0][1].setPiece(new Knight(White, cells[0][1]));
-		cells[0][6].setPiece(new Knight(White, cells[0][6]));
-		cells[7][1].setPiece(new Knight(Black, cells[7][1]));
-		cells[7][6].setPiece(new Knight(Black, cells[7][6]));
+		try
+		{
+			//giving 2 knights to both players on cells just beside the rooks.
+			new Knight(White, cells[0][1]);
+			new Knight(White, cells[0][6]);
+			new Knight(Black, cells[7][1]);
+			new Knight(Black, cells[7][6]);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Something went wrong while constructing knights.");
+		}
 
-		//giving 2 bishops to both players on cells just beside the knights.
-		cells[0][2].setPiece(new Bishop(White, cells[0][2]));
-		cells[0][5].setPiece(new Bishop(White, cells[0][5]));
-		cells[7][2].setPiece(new Bishop(Black, cells[7][2]));
-		cells[7][5].setPiece(new Bishop(Black, cells[7][5]));
+		try
+		{	//giving 2 bishops to both players on cells just beside the knights.
+			new Bishop(White, cells[0][2]);
+			new Bishop(White, cells[0][5]);
+			new Bishop(Black, cells[7][2]);
+			new Bishop(Black, cells[7][5]);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Something went wrong while constructing bishops.");
+		}
 
-		//giving a queen to both players on cells just beside a bishop.
-		cells[0][4].setPiece(new Queen(White, cells[0][4]));
-		cells[7][4].setPiece(new Queen(Black, cells[7][4]));
+		try
+		{
+			//giving a queen to both players on cells just beside a bishop.
+			new Queen(White, cells[0][4]);
+			new Queen(Black, cells[7][4]);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Something went wrong while constructing queens.");
+		}
 
-		//giving a king to both players on cells just beside the queen.
-		cells[0][3].setPiece(new King(White, cells[0][3]));
-		cells[7][3].setPiece(new King(Black, cells[7][3]));
+		try
+		{
+			//giving a king to both players on cells just beside the queen.
+			new King(White, cells[0][3]);
+			new King(Black, cells[7][3]);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Something went wrong while constructing kings.");
+		}
 
 	}
 
@@ -81,15 +134,19 @@ public class Board {
 	 * */
 	public boolean isUnderAttack(char row, char col, Piece otherThanThis)
 	{
-		Cell dest = getCellAt((char)(row-rowMin), (char)(col-colMin));
+		Cell dest = getCellAt(row, col);
+		if(dest == null)
+			return false;
+
 		for(int i=0; i<8; i++)
 		{	for(int j=0; j<8; j++)
 			{	Piece onThis = cells[i][j].getPiece();
+				//if(onThis != null)
+				//	System.out.println(onThis);
 				if((dest != cells[i][j]) && (onThis != null))
-				{	if( (onThis != otherThanThis) && (onThis.canMoveTo(dest, this)))
-					{	System.out.println(dest.row + " " + dest.col+
-							" is under attack by piece at "
-							+ cells[i][j].row + " " + cells[i][j].col);
+				{	if( (onThis != otherThanThis) &&(onThis.canMoveTo(dest, this)))
+					{	//System.out.println(dest+" is under"
+						//	+ " attack by piece at "+ cells[i][j]);
 						return true;
 					}
 				}

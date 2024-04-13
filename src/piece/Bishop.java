@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 import chess.*;
 
-public class Bishop extends Piece {
-
-	public Bishop(String col, Cell cell)
+public class Bishop extends Piece
+{
+	public Bishop(String col, Cell cell) throws Exception
 	{	super(col, cell);
 	}
 
