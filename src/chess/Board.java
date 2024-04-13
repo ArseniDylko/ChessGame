@@ -37,7 +37,6 @@ public class Board {
 	{
 		this.emptyBoard();
 	}
-
 	/**
 	 * Constructor for a filled board.
 	 * */
